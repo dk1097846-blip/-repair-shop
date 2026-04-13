@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Repair Shop Management</title>
+  <style>
+    body {font-family: Arial; background:#f4f4f4; margin:0;}
+    header {background:#333; color:#fff; padding:10px; text-align:center;}
+    .container {padding:20px;}
+    input, select, button {padding:8px; margin:5px;}
+    table {width:100%; border-collapse: collapse; margin-top:20px;}
+    th, td {border:1px solid #ccc; padding:10px; text-align:center;}
+    th {background:#555; color:#fff;}
+  </style>
+</head>
+<body>
+
+<header>
+  <h2>Repair Shop Management System</h2>
+</header>
+
+<div class="container">
+  <h3>Add Repair Record</h3>
+  <input type="text" id="name" placeholder="Customer Name">
+  <input type="text" id="device" placeholder="Device (Mobile/Laptop)">
+  <input type="text" id="issue" placeholder="Issue">
+  <input type="number" id="bill" placeholder="Bill Amount">
+  <select id="status">
+    <option>Pending</option>
+    <option>Done</option>
+  </select>
+  <button onclick="addRecord()">Add</button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Device</th>
+        <th>Issue</th>
+        <th>Bill</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+</div>
+
+<script>
+  let records = JSON.parse(localStorage.getItem('records')) || [];
+
+  function save() {
+    localStorage.setItem('records', JSON.stringify(records));
+    display();
+  }
+
+  function addRecord() {
+    let name = document.getElementById('name').value;
+    let device = document.getElementById('device').value;
+    let issue = document.getElementById('issue').value;
+    let bill = document.getElementById('bill').value;
+    let status = document.getElementById('status').value;
+
+    if(name === '' || device === '') {
+      alert('Please fill required fields');
+      return;
+    }
+
+    records.push({name, device, issue, bill, status});
+    save();
+  }
+
+  function deleteRecord(index) {
+    records.splice(index, 1);
+    save();
+  }
+
+  function display() {
+    let table = document.getElementById('tableBody');
+    table.innerHTML = '';
+
+    records.forEach((rec, index) => {
+      table.innerHTML += `
+        <tr>
+          <td>${rec.name}</td>
+          <td>${rec.device}</td>
+          <td>${rec.issue}</td>
+          <td>${rec.bill}</td>
+          <td>${rec.status}</td>
+          <td><button onclick="deleteRecord(${index})">Delete</button></td>
+        </tr>
+      `;
+    });
+  }
+
+  display();
+</script>
+
+</body>
+</html>
